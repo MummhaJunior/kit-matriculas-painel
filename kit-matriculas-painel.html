@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Kit Máquina de Matrículas — Painel de Operação</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#0c1120;
+  --bg-alt:#101729;
+  --panel:#141d33;
+  --panel-border:#233052;
+  --grid-line: rgba(120,146,205,0.07);
+  --text:#e7ebf5;
+  --text-dim:#8b96b8;
+  --text-faint:#5c6788;
+
+  --c-atracao:#4f8ef7;
+  --c-destino:#f5a623;
+  --c-gateway:#1fbf8f;
+  --c-entrega:#8b7cf0;
+  --c-automacao:#ef5da8;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background:
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 40px 40px,
+    var(--bg);
+  color:var(--text);
+  font-family:'Inter', sans-serif;
+  line-height:1.5;
+  padding-bottom:80px;
+}
+
+.mono{font-family:'IBM Plex Mono', monospace;}
+
+a{color:inherit;}
+
+.wrap{
+  max-width:980px;
+  margin:0 auto;
+  padding:0 28px;
+}
+
+/* ---------- HERO ---------- */
+.hero{
+  padding:72px 0 48px;
+  border-bottom:1px solid var(--panel-border);
+}
+.hero-eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px;
+  letter-spacing:0.14em;
+  color:var(--c-atracao);
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:22px;
+}
+.hero-eyebrow::before{
+  content:"";
+  width:8px; height:8px;
+  border-radius:50%;
+  background:var(--c-atracao);
+  box-shadow:0 0 0 4px rgba(79,142,247,0.18);
+}
+.hero h1{
+  font-family:'Sora', sans-serif;
+  font-weight:800;
+  font-size:clamp(32px, 5vw, 50px);
+  line-height:1.08;
+  letter-spacing:-0.015em;
+  max-width:780px;
+}
+.hero h1 span{color:var(--c-atracao);}
+.hero p.lede{
+  margin-top:20px;
+  max-width:620px;
+  color:var(--text-dim);
+  font-size:16.5px;
+}
+
+.hero-stats{
+  margin-top:40px;
+  display:flex;
+  gap:0;
+  border:1px solid var(--panel-border);
+  border-radius:14px;
+  overflow:hidden;
+  background:var(--panel);
+}
+.hero-stat{
+  flex:1;
+  padding:20px 24px;
+  border-right:1px solid var(--panel-border);
+}
+.hero-stat:last-child{border-right:none;}
+.hero-stat .num{
+  font-family:'Sora', sans-serif;
+  font-weight:700;
+  font-size:26px;
+}
+.hero-stat .label{
+  margin-top:4px;
+  font-size:12px;
+  color:var(--text-faint);
+  font-family:'IBM Plex Mono', monospace;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+#hero-progress-num{color:var(--c-gateway);}
+
+/* ---------- SECTION SHELL ---------- */
+.section{
+  padding:64px 0;
+  border-bottom:1px solid var(--panel-border);
+}
+.section-head{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  margin-bottom:8px;
+}
+.section-index{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:13px;
+  color:var(--accent, var(--c-atracao));
+  border:1px solid var(--accent, var(--c-atracao));
+  border-radius:6px;
+  padding:2px 8px;
+}
+.section h2{
+  font-family:'Sora', sans-serif;
+  font-weight:700;
+  font-size:24px;
+  letter-spacing:-0.01em;
+}
+.section-sub{
+  color:var(--text-dim);
+  font-size:15px;
+  max-width:640px;
+  margin-top:6px;
+  margin-bottom:36px;
+}
+
+/* ---------- 5 PILLARS OVERVIEW ---------- */
+.pillars{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+.pillar-card{
+  border:1px solid var(--panel-border);
+  background:var(--panel);
+  border-radius:12px;
+  padding:18px 14px;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .15s ease, border-color .15s ease;
+}
+.pillar-card:hover{transform:translateY(-3px);}
+.pillar-card .dot{
+  width:10px;height:10px;border-radius:50%;
+  margin:0 auto 12px;
+}
+.pillar-card .name{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11.5px;
+  letter-spacing:0.03em;
+  text-transform:uppercase;
+}
+.pillar-card .n{
+  font-family:'Sora',sans-serif;
+  font-size:20px;
+  font-weight:700;
+  margin-top:6px;
+}
+
+/* ---------- CHANNELS ---------- */
+.channel-list{display:flex; flex-direction:column; gap:14px;}
+.channel{
+  border:1px solid var(--panel-border);
+  border-left:3px solid var(--ch-color);
+  background:var(--panel);
+  border-radius:10px;
+  padding:20px 22px;
+}
+.channel-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+.channel-name{font-family:'Sora',sans-serif; font-weight:700; font-size:16.5px; color:var(--ch-color);}
+.channel-tag{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-faint); border:1px solid var(--panel-border); border-radius:20px; padding:3px 10px;}
+.channel p{font-size:14.5px; color:var(--text-dim);}
+.channel strong{color:var(--text); font-weight:600;}
+
+/* ---------- LP DOBRAS ---------- */
+.dobras{
+  display:flex;
+  flex-direction:column;
+  border:1px solid var(--panel-border);
+  border-radius:12px;
+  overflow:hidden;
+  background:var(--panel);
+}
+.dobra{
+  display:grid;
+  grid-template-columns:64px 1fr;
+  border-bottom:1px solid var(--panel-border);
+}
+.dobra:last-child{border-bottom:none;}
+.dobra-n{
+  background:var(--bg-alt);
+  color:var(--c-destino);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding-top:20px;
+  border-right:1px solid var(--panel-border);
+}
+.dobra-body{padding:18px 22px;}
+.dobra-body h4{font-family:'Sora',sans-serif; font-size:15.5px; margin-bottom:6px;}
+.dobra-body p{font-size:14.5px; color:var(--text-dim);}
+.dobra-body em{color:var(--text); font-style:normal; background:rgba(245,166,35,0.12); padding:1px 6px; border-radius:4px;}
+
+/* ---------- GATEWAY ---------- */
+.gateway-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.gw-card{border:1px solid var(--panel-border); background:var(--panel); border-radius:12px; padding:22px;}
+.gw-card h4{font-family:'Sora',sans-serif; color:var(--c-gateway); font-size:16px; margin-bottom:8px;}
+.gw-card p{font-size:14.5px; color:var(--text-dim);}
+.gw-full{grid-column:1 / -1;}
+
+/* ---------- MODULES (entrega) ---------- */
+.modules{
+  border:1px solid var(--panel-border);
+  border-radius:12px;
+  background:var(--panel);
+  overflow:hidden;
+}
+.module{
+  display:flex;
+  gap:16px;
+  padding:18px 22px;
+  border-bottom:1px solid var(--panel-border);
+  align-items:flex-start;
+}
+.module:last-child{border-bottom:none;}
+.module .idx{
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--c-entrega);
+  font-size:13px;
+  min-width:78px;
+}
+.module h4{font-family:'Sora',sans-serif; font-size:15px; margin-bottom:3px;}
+.module p{font-size:14px; color:var(--text-dim);}
+.module.bonus h4{color:var(--c-entrega);}
+
+/* ---------- AUTOMATION ---------- */
+.flow{display:flex; flex-direction:column; gap:14px;}
+.flow-card{
+  border:1px solid var(--panel-border);
+  border-left:3px solid var(--c-automacao);
+  background:var(--panel);
+  border-radius:10px;
+  padding:20px 22px;
+}
+.flow-card .trig{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  color:var(--c-automacao);
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  margin-bottom:6px;
+}
+.flow-card h4{font-family:'Sora',sans-serif; font-size:15.5px; margin-bottom:8px;}
+.flow-card .msg{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  color:var(--text-dim);
+  background:var(--bg-alt);
+  border:1px solid var(--panel-border);
+  border-radius:8px;
+  padding:12px 14px;
+  line-height:1.6;
+}
+
+/* ---------- CHECKLIST / PAINEL DE CONTROLE ---------- */
+.console{
+  border:1px solid var(--panel-border);
+  border-radius:14px;
+  background:var(--panel);
+  overflow:hidden;
+}
+.console-bar{
+  padding:20px 24px;
+  border-bottom:1px solid var(--panel-border);
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+.console-bar .track{
+  flex:1;
+  height:8px;
+  border-radius:6px;
+  background:var(--bg-alt);
+  overflow:hidden;
+}
+.console-bar .fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg, var(--c-gateway), var(--c-atracao));
+  transition:width .4s ease;
+}
+.console-bar .pct{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  color:var(--text-dim);
+  min-width:70px;
+  text-align:right;
+}
+.console-hint{
+  padding:12px 24px;
+  font-size:12.5px;
+  color:var(--text-faint);
+  font-family:'IBM Plex Mono',monospace;
+  border-bottom:1px solid var(--panel-border);
+}
+.item{
+  display:grid;
+  grid-template-columns:26px 90px 1fr 90px;
+  gap:16px;
+  align-items:center;
+  padding:16px 24px;
+  border-bottom:1px solid var(--panel-border);
+  cursor:pointer;
+  transition:background .12s ease;
+}
+.item:last-child{border-bottom:none;}
+.item:hover{background:rgba(255,255,255,0.02);}
+.checkbox{
+  width:20px; height:20px;
+  border-radius:6px;
+  border:1.5px solid var(--text-faint);
+  position:relative;
+  transition:all .15s ease;
+  flex-shrink:0;
+}
+.checkbox.andamento{border-color:var(--c-destino); background:rgba(245,166,35,0.15);}
+.checkbox.andamento::after{content:"";position:absolute; inset:5px; border-radius:2px; background:var(--c-destino);}
+.checkbox.pronto{border-color:var(--c-gateway); background:var(--c-gateway);}
+.checkbox.pronto::after{content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:13px; color:#08121a; font-weight:700;}
+.item-pillar{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+  color:var(--pillar-color);
+}
+.item-text{font-size:14.5px;}
+.item-text .task{display:block; color:var(--text);}
+.item-status{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  text-align:right;
+  color:var(--text-faint);
+}
+.item[data-priority="Alta"] .item-text .task::before{
+  content:"● "; color:var(--c-automacao); font-size:10px;
+}
+.item[data-priority="Média"] .item-text .task::before{
+  content:"● "; color:var(--c-destino); font-size:10px;
+}
+
+footer{
+  max-width:980px;
+  margin:60px auto 0;
+  padding:0 28px;
+  color:var(--text-faint);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  text-align:center;
+}
+
+@media (max-width:720px){
+  .pillars{grid-template-columns:repeat(3,1fr);}
+  .gateway-grid{grid-template-columns:1fr;}
+  .hero-stats{flex-direction:column;}
+  .hero-stat{border-right:none; border-bottom:1px solid var(--panel-border);}
+  .item{grid-template-columns:22px 1fr; grid-template-areas:"box pillar" "box text" "box status"; row-gap:4px;}
+  .checkbox{grid-area:box;}
+  .item-pillar{grid-area:pillar;}
+  .item-text{grid-area:text;}
+  .item-status{grid-area:status; text-align:left;}
+}
+
+:focus-visible{outline:2px solid var(--c-atracao); outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<div class="wrap hero">
+  <div class="hero-eyebrow">Painel operacional · Kit Máquina de Matrículas</div>
+  <h1>O funil completo, do <span>anúncio</span> ao <span>WhatsApp</span> de pós-venda.</h1>
+  <p class="lede">Um produto híbrido para donos e diretores de escolas de bairro: PDFs de scripts de matrícula + eBooks, vendidos por checkout automatizado, com onboarding disparado sozinho no WhatsApp.</p>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num" id="hero-progress-num">0%</div>
+      <div class="label">Progresso geral</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">5</div>
+      <div class="label">Pilares do funil</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">R$47–97</div>
+      <div class="label">Ticket sugerido</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap section" style="padding-top:40px; padding-bottom:40px;">
+  <div class="pillars">
+    <div class="pillar-card" style="--accent:var(--c-atracao)" onclick="document.getElementById('s1').scrollIntoView()">
+      <div class="dot" style="background:var(--c-atracao)"></div>
+      <div class="name">Atração</div>
+    </div>
+    <div class="pillar-card" onclick="document.getElementById('s2').scrollIntoView()">
+      <div class="dot" style="background:var(--c-destino)"></div>
+      <div class="name">Destino</div>
+    </div>
+    <div class="pillar-card" onclick="document.getElementById('s3').scrollIntoView()">
+      <div class="dot" style="background:var(--c-gateway)"></div>
+      <div class="name">Checkout</div>
+    </div>
+    <div class="pillar-card" onclick="document.getElementById('s4').scrollIntoView()">
+      <div class="dot" style="background:var(--c-entrega)"></div>
+      <div class="name">Entrega</div>
+    </div>
+    <div class="pillar-card" onclick="document.getElementById('s5').scrollIntoView()">
+      <div class="dot" style="background:var(--c-automacao)"></div>
+      <div class="name">Automação</div>
+    </div>
+  </div>
+</div>
+
+<!-- 1. ATRAÇÃO -->
+<div class="wrap section" id="s1" style="--accent:var(--c-atracao)">
+  <div class="section-head">
+    <span class="section-index">01</span>
+    <h2>Canais de Aquisição (Tráfego)</h2>
+  </div>
+  <p class="section-sub">Atrair donos, diretores pedagógicos e gestores de escolas de bairro de forma segmentada, combinando tração paga com autoridade orgânica.</p>
+
+  <div class="channel-list">
+    <div class="channel" style="--ch-color:var(--c-atracao)">
+      <div class="channel-top">
+        <span class="channel-name">Meta Ads</span>
+        <span class="channel-tag">pago · tração rápida</span>
+      </div>
+      <p><strong>Público-alvo:</strong> segmentação por interesses (dono de escola, diretor, educação infantil) com exclusão de públicos frios. Raio local ou focado em capitais de interesse (Salvador, Aracaju etc.).</p>
+      <p style="margin-top:8px;"><strong>Criativos:</strong> vídeos e imagens focados na dor do WhatsApp silencioso ou de leads que perguntam preço e somem.</p>
+    </div>
+    <div class="channel" style="--ch-color:var(--c-automacao)">
+      <div class="channel-top">
+        <span class="channel-name">LinkedIn</span>
+        <span class="channel-tag">orgânico · B2B qualificado</span>
+      </div>
+      <p><strong>Ação:</strong> prospecção ativa (outbound) abordando diretores de escolas particulares de bairro na região geográfica de interesse.</p>
+      <p style="margin-top:8px;"><strong>Conteúdo:</strong> insights de captação, direcionando o contato para o artigo estratégico do blog com botão de compra do kit no final.</p>
+    </div>
+    <div class="channel" style="--ch-color:var(--c-destino)">
+      <div class="channel-top">
+        <span class="channel-name">Instagram</span>
+        <span class="channel-tag">autoridade</span>
+      </div>
+      <p><strong>Ação:</strong> carrosséis e Reels resolvendo pequenas dores de atendimento e vendas. Bio sempre direcionando para a Landing Page.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 2. DESTINO -->
+<div class="wrap section" id="s2" style="--accent:var(--c-destino)">
+  <div class="section-head">
+    <span class="section-index">02</span>
+    <h2>Página de Destino (Funil de Vendas)</h2>
+  </div>
+  <p class="section-sub">Em vez de loja virtual complexa: uma página única de conversão direta, hospedada na infraestrutura atual (VPS/KVM) com WordPress + Elementor.</p>
+
+  <div class="dobras">
+    <div class="dobra">
+      <div class="dobra-n">01</div>
+      <div class="dobra-body">
+        <h4>Headline + Promessa</h4>
+        <p><em>"A ferramenta definitiva para treinar sua equipe de atendimento e fechar mais matrículas no WhatsApp, sem precisar perder tempo elaborando processos do zero."</em></p>
+      </div>
+    </div>
+    <div class="dobra">
+      <div class="dobra-n">02</div>
+      <div class="dobra-body">
+        <h4>O Problema</h4>
+        <p>Erros clássicos: tabela de preços fria, falta de follow-up, perda de dados de leads.</p>
+      </div>
+    </div>
+    <div class="dobra">
+      <div class="dobra-n">03</div>
+      <div class="dobra-body">
+        <h4>A Solução Híbrida</h4>
+        <p>O kit com os PDFs (digital e impresso) + eBooks adicionais.</p>
+      </div>
+    </div>
+    <div class="dobra">
+      <div class="dobra-n">04</div>
+      <div class="dobra-body">
+        <h4>Depoimentos / Validação</h4>
+        <p>Prints de conversas reais de captação bem-sucedidas.</p>
+      </div>
+    </div>
+    <div class="dobra">
+      <div class="dobra-n">05</div>
+      <div class="dobra-body">
+        <h4>Oferta + Call to Action</h4>
+        <p>Valor acessível — sugestão de R$ 47 a R$ 97 para facilitar a conversão por impulso.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. CHECKOUT -->
+<div class="wrap section" id="s3" style="--accent:var(--c-gateway)">
+  <div class="section-head">
+    <span class="section-index">03</span>
+    <h2>Checkout e Gateway de Pagamento</h2>
+  </div>
+  <p class="section-sub">Fricção zero: a escolha do gateway define a agilidade de conversão e a automação de pós-venda.</p>
+
+  <div class="gateway-grid">
+    <div class="gw-card">
+      <h4>Kiwify (indicado)</h4>
+      <p>Extremamente limpa, uma das maiores taxas de aprovação do mercado. Área de membros (Kiwify Club) gratuita, fácil de navegar e intuitiva para clientes menos tecnológicos.</p>
+    </div>
+    <div class="gw-card">
+      <h4>Hotmart</h4>
+      <p>Alternativa ao Kiwify, com posicionamento similar de gateway + área de membros para produtos digitais.</p>
+    </div>
+    <div class="gw-card gw-full">
+      <h4>Order Bump — venda casada no checkout</h4>
+      <p>Oferecer um produto complementar de menor valor no momento do pagamento — ex.: "Por mais R$ 19,90, leve nossa planilha de controle financeiro para escolas de educação infantil."</p>
+    </div>
+  </div>
+</div>
+
+<!-- 4. ENTREGA -->
+<div class="wrap section" id="s4" style="--accent:var(--c-entrega)">
+  <div class="section-head">
+    <span class="section-index">04</span>
+    <h2>Estrutura de Entrega (Produto Híbrido)</h2>
+  </div>
+  <p class="section-sub">Onde o cliente recebe o conteúdo de forma descomplicada, dentro da área de membros da Kiwify.</p>
+
+  <div class="modules">
+    <div class="module">
+      <div class="idx">Módulo 1</div>
+      <div><h4>Boas-vindas</h4><p>Vídeo rápido de instruções.</p></div>
+    </div>
+    <div class="module">
+      <div class="idx">Módulo 2</div>
+      <div><h4>Configurando sua Estrutura</h4><p>eBook de WhatsApp Business.</p></div>
+    </div>
+    <div class="module">
+      <div class="idx">Módulo 3</div>
+      <div><h4>Scripts de Matrícula</h4><p>PDFs híbridos — versões "Imprimir" e "Copiar/Colar".</p></div>
+    </div>
+    <div class="module bonus">
+      <div class="idx">Módulo 4</div>
+      <div><h4>Bônus Premium — Atração Local</h4><p>eBook de Google Meu Negócio.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. AUTOMAÇÃO -->
+<div class="wrap section" id="s5" style="--accent:var(--c-automacao); border-bottom:none;">
+  <div class="section-head">
+    <span class="section-index">05</span>
+    <h2>Automação de Pós-Venda</h2>
+  </div>
+  <p class="section-sub">O motor invisível: renda extra funcionando no piloto automático, via n8n integrado à API oficial do WhatsApp.</p>
+
+  <div class="flow">
+    <div class="flow-card">
+      <div class="trig">Disparador · compra aprovada, boleto gerado ou Pix emitido na Kiwify</div>
+      <h4>Fluxo 1 — Compra Aprovada</h4>
+      <div class="msg">"Olá, [Nome]! Aqui é o [Seu Nome]. O seu Kit Máquina de Matrículas já está liberado. O seu link de acesso é: [Link]..."</div>
+    </div>
+    <div class="flow-card">
+      <div class="trig">Disparador · carrinho abandonado ou Pix não pago</div>
+      <h4>Fluxo 2 — Recuperação</h4>
+      <div class="msg">"Olá, notei que você tentou garantir o kit, mas o pagamento não foi concluído. Teve alguma dúvida técnica ou problema com o Pix? Estou aqui para ajudar."</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAINEL DE CONTROLE -->
+<div class="wrap section" style="border-bottom:none; padding-top:56px;">
+  <div class="section-head">
+    <span class="section-index" style="color:var(--text-dim); border-color:var(--panel-border);">//</span>
+    <h2>Painel de Controle das Atividades</h2>
+  </div>
+  <p class="section-sub">Clique em cada item para avançar o status: não iniciado → em andamento → concluído. Fica salvo automaticamente.</p>
+
+  <div class="console">
+    <div class="console-bar">
+      <div class="track"><div class="fill" id="progress-fill"></div></div>
+      <div class="pct" id="progress-pct">0 / 0 concluídas</div>
+    </div>
+    <div class="console-hint">● prioridade alta &nbsp;&nbsp; ● prioridade média &nbsp;&nbsp; sem marcador = sem prioridade definida</div>
+    <div id="checklist"></div>
+  </div>
+</div>
+
+<footer>Kit Máquina de Matrículas — painel gerado a partir do plano operacional</footer>
+
+<script>
+const PILLAR_COLORS = {
+  "Atração":"var(--c-atracao)",
+  "Destino":"var(--c-destino)",
+  "Gateway":"var(--c-gateway)",
+  "Produto":"var(--c-entrega)",
+  "Automação":"var(--c-automacao)"
+};
+
+const ITEMS = [
+  {id:"atr-1", pillar:"Atração", task:"Definição de Públicos (Meta Ads)", priority:"Alta", initial:"planejado"},
+  {id:"atr-2", pillar:"Atração", task:"Criação dos criativos de anúncios", priority:"Média", initial:"nao-iniciado"},
+  {id:"dest-1", pillar:"Destino", task:"Criação da Landing Page (WordPress)", priority:"Alta", initial:"nao-iniciado"},
+  {id:"gw-1", pillar:"Gateway", task:"Cadastro do Produto e Checkout (Kiwify)", priority:"Alta", initial:"nao-iniciado"},
+  {id:"prod-1", pillar:"Produto", task:"Configuração do WhatsApp (Seu eBook)", priority:"—", initial:"pronto"},
+  {id:"prod-2", pillar:"Produto", task:"Redação dos Scripts de Vendas (Módulos 2, 3, 4)", priority:"Alta", initial:"andamento"},
+  {id:"prod-3", pillar:"Produto", task:"Google Meu Negócio (Seu eBook Bônus)", priority:"—", initial:"pronto"},
+  {id:"auto-1", pillar:"Automação", task:"Integração Kiwify → n8n → WhatsApp", priority:"Média", initial:"planejado"},
+];
+
+const STATUS_ORDER = ["nao-iniciado","planejado","andamento","pronto"];
+const STATUS_LABEL = {
+  "nao-iniciado":"Não iniciado",
+  "planejado":"Planejado",
+  "andamento":"Em andamento",
+  "pronto":"Pronto"
+};
+
+const STORAGE_KEY = "kit-matriculas-checklist";
+let state = {};
+
+function nextStatus(current){
+  // simple cycle for interaction: nao-iniciado/planejado -> andamento -> pronto -> nao-iniciado
+  if(current === "pronto") return "nao-iniciado";
+  if(current === "andamento") return "pronto";
+  return "andamento"; // from nao-iniciado or planejado
+}
+
+async function loadState(){
+  try{
+    const result = await window.storage.get(STORAGE_KEY, false);
+    if(result && result.value){
+      state = JSON.parse(result.value);
+    } else {
+      throw new Error("empty");
+    }
+  } catch(e){
+    state = {};
+    ITEMS.forEach(it => state[it.id] = it.initial);
+    try { await window.storage.set(STORAGE_KEY, JSON.stringify(state), false); } catch(err){}
+  }
+  // fill any missing ids (in case ITEMS changed)
+  ITEMS.forEach(it => { if(!(it.id in state)) state[it.id] = it.initial; });
+  render();
+}
+
+async function saveState(){
+  try{ await window.storage.set(STORAGE_KEY, JSON.stringify(state), false); }
+  catch(e){ console.error("Storage error", e); }
+}
+
+function render(){
+  const list = document.getElementById("checklist");
+  list.innerHTML = "";
+  let done = 0;
+  ITEMS.forEach(it => {
+    const st = state[it.id] || it.initial;
+    if(st === "pronto") done++;
+    const row = document.createElement("div");
+    row.className = "item";
+    row.setAttribute("data-priority", it.priority);
+    row.innerHTML = `
+      <div class="checkbox ${st === 'pronto' ? 'pronto' : (st === 'andamento' ? 'andamento' : '')}"></div>
+      <div class="item-pillar" style="--pillar-color:${PILLAR_COLORS[it.pillar] || 'var(--text-dim)'}">${it.pillar}</div>
+      <div class="item-text"><span class="task">${it.task}</span></div>
+      <div class="item-status">${STATUS_LABEL[st]}</div>
+    `;
+    row.addEventListener("click", () => {
+      state[it.id] = nextStatus(state[it.id] || it.initial);
+      saveState();
+      render();
+    });
+    list.appendChild(row);
+  });
+
+  const total = ITEMS.length;
+  const pct = total ? Math.round((done/total)*100) : 0;
+  document.getElementById("progress-fill").style.width = pct + "%";
+  document.getElementById("progress-pct").textContent = `${done} / ${total} concluídas`;
+  document.getElementById("hero-progress-num").textContent = pct + "%";
+}
+
+loadState();
+</script>
+
+</body>
+</html>
